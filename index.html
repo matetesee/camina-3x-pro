@@ -101,6 +101,10 @@
 #sp .sp-cap{display:block;font-weight:500;font-size:12.5px;color:var(--soft);margin-top:2px}
 #sp .sp-card.row .sp-label{padding:17px 16px}
 #sp .sp-arrow{margin-left:auto;margin-right:16px;color:var(--bronze);font-size:24px;font-weight:700;line-height:1}
+#sp .sp-card.row.imgrow{min-height:76px}
+#sp .sp-card.row.imgrow .sp-label{flex:1}
+#sp .sp-row-thumb{width:86px;align-self:stretch;flex:none;margin-left:auto}
+#sp .sp-row-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 #sp .sp-check{margin-left:auto;margin-right:15px;width:25px;height:25px;border-radius:50%;border:2px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;color:#FFFFFF;transition:.15s}
 #sp .sp-card.sel .sp-check{background:var(--bronze2);border-color:var(--bronze2);transform:scale(1.08)}
 
@@ -428,7 +432,7 @@ var CONFIG = {
       h:"Tu metabolismo cambió. <span class='am'>Descubrí tu plan de caminata</span> personalizado para esta etapa.",
       body:"En menos de 60 segundos calculamos cuántos minutos de Método Camina 3X necesitás para activar tu quema de grasa, según tu edad y tu cuerpo.",
       btn:"CREAR MI PLAN EN 1 MINUTO" },
-    { type:"cards", key:"edad", phase:"Tu perfil", h:"¿Cuántos años tenés?", cols:2, opts:[
+    { type:"cards", key:"edad", phase:"Tu perfil", h:"¿Cuántos años tenés?", layout:"row", opts:[
       {t:"18 a 29 años", img:"images/edad-18-29.png"},{t:"30 a 39 años", img:"images/edad-30-39.png"},{t:"40 a 49 años", img:"images/edad-40-49.png"},{t:"Más de 50 años", img:"images/edad-mas-50.png"}] },
     { type:"inter", phase:"Tu perfil", img:"images/social-proof-76000.png", h:"Más de <span class='am'>76.000 personas</span> ya dieron el primer paso", body:"Cada semana, miles de personas usan el Método Camina 3X para activar su metabolismo caminando, sin pisar un gimnasio." },
     { type:"cards", key:"grasa", phase:"Tu perfil", h:"¿Cómo clasificarías tu cuerpo hoy?", cols:2, opts:[
@@ -542,9 +546,12 @@ function render(){
 
   if(s.type==='cards'){
     var hasImg=s.opts.some(function(o){return o.img;});
-    html+='<div class="sp-grid '+(hasImg&&s.cols===2?'cols2':'')+'">';
+    var rowImg=hasImg&&s.layout==='row';
+    html+='<div class="sp-grid '+(hasImg&&!rowImg&&s.cols===2?'cols2':'')+'">';
     s.opts.forEach(function(o,idx){
-      if(hasImg){ html+='<div class="sp-card" data-i="'+idx+'">'+thumb(o.img,o.t)+
+      if(rowImg){ html+='<div class="sp-card row imgrow" data-i="'+idx+'"><div class="sp-label">'+esc(o.t)+(o.cap?'<span class="sp-cap">'+esc(o.cap)+'</span>':'')+'</div>'+
+        (o.img?'<div class="sp-row-thumb"><img src="'+o.img+'" alt="" loading="lazy"></div>':'<span class="sp-arrow">›</span>')+'</div>'; }
+      else if(hasImg){ html+='<div class="sp-card" data-i="'+idx+'">'+thumb(o.img,o.t)+
         '<div class="sp-label">'+esc(o.t)+(o.cap?'<span class="sp-cap">'+esc(o.cap)+'</span>':'')+'</div></div>'; }
       else { html+='<div class="sp-card row" data-i="'+idx+'"><div class="sp-label">'+esc(o.t)+(o.cap?'<span class="sp-cap">'+esc(o.cap)+'</span>':'')+'</div><span class="sp-arrow">›</span></div>'; }
     });
