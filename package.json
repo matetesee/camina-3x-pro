@@ -1,0 +1,13 @@
+{
+  "name": "camina-3x-pro",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Quiz funnel Método Camina 3X™ — construido a partir del ángulo de mercado de un funnel competidor (inlead.digital/appmetodo217), con marca, oferta y tracking propios",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
