@@ -697,9 +697,22 @@ function runLoader(){
     if(p>=100){ clearInterval(iv); if(tIv)clearInterval(tIv); setTimeout(renderSale,550); } },220);
 }
 
+var _backRedirectSet=false;
+function setBackRedirect(url){
+  if(_backRedirectSet) return; // solo se activa una vez, al llegar a la oferta
+  _backRedirectSet=true;
+  var urlBackRedirect = url.trim() + (url.indexOf('?')>0 ? '&' : '?') + window.location.search.replace('?','');
+  history.pushState({}, '', location.href);
+  history.pushState({}, '', location.href);
+  history.pushState({}, '', location.href);
+  window.addEventListener('popstate', function(){
+    setTimeout(function(){ window.location.href = urlBackRedirect; }, 1);
+  });
+}
 function renderSale(){
   document.querySelector('#sp .sp-bar').style.display='none';
   document.querySelector('#sp .sp-top').style.display='none';
+  setBackRedirect('/ultima-oportunidad.html');
   var name=state.answers.name?esc(state.answers.name):'caminante';
   var brand=esc(CONFIG.BRAND_PLAIN);
   var hero=CONFIG.IMG.sale_hero?'<img src="'+CONFIG.IMG.sale_hero+'" alt="">':'IMAGEN ANTES / DESPUÉS';
