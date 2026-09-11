@@ -377,10 +377,11 @@ var CONFIG = {
 
   IMG: { sale_hero: "", program: "" },
 
+  // Precio base en USD. La página lo convierte en vivo a la moneda local
+  // del visitante (según su país) usando una API de geolocalización por IP
+  // + una API de tipo de cambio — ver detectCurrency()/getLocalPricing() abajo.
   TIERS: [
-    { name:"PRUEBA 7 DÍAS",           old:"$19,90 antes", now:"$14,90", perday:"2.13", off:"25% OFF", bonus:"", variantId:"" },
-    { name:"MÉTODO 21 DÍAS",          old:"$55 antes",    now:"$9,90",  perday:"0.47", off:"82% OFF", bonus:"🎁 + Guía de alimentación y Coach personal de regalo", variantId:"", popular:true },
-    { name:"TRANSFORMACIÓN 90 DÍAS",  old:"$149 antes",   now:"$29,90", perday:"0.33", off:"80% OFF", bonus:"🎁 + Comunidad VIP y Planilla de Progreso", variantId:"" }
+    { name:"ACCESO DE POR VIDA", oldUSD:55, nowUSD:9.90, off:"82% OFF", bonus:"🎁 + Guía de alimentación y Coach personal de regalo", variantId:"", popular:true }
   ],
 
   INCLUDES: [
@@ -461,6 +462,57 @@ logo.innerHTML=CONFIG.BRAND;
 var _pop=CONFIG.TIERS.findIndex(function(t){return t.popular;});
 var state={ i:0, tier:_pop>=0?_pop:0, answers:{} };
 var STEPS=CONFIG.STEPS, TOTAL=STEPS.length;
+
+/* ===== Precio local automático (USD -> moneda del país del visitante) =====
+   1) Geolocaliza por IP (sin pedirle nada al usuario) para saber su moneda.
+   2) Busca el tipo de cambio USD -> esa moneda.
+   3) Convierte los precios en USD del CONFIG y actualiza el DOM.
+   Si cualquiera de las dos consultas falla (red, bloqueador, etc.) se
+   muestra el precio en USD como respaldo — nunca se rompe la oferta. */
+function fetchJSON(url,ms){
+  var ctrl=(window.AbortController)?new AbortController():null;
+  var t=ctrl?setTimeout(function(){ctrl.abort();},ms||2500):null;
+  return fetch(url,{signal:ctrl?ctrl.signal:undefined}).then(function(r){ if(t)clearTimeout(t); return r.json(); });
+}
+function detectCurrency(){
+  return fetchJSON('https://ipapi.co/json/').then(function(geo){
+    var c=geo&&geo.currency; if(!c) throw new Error('sin moneda'); return c;
+  }).catch(function(){
+    return fetchJSON('https://ipwho.is/').then(function(geo){
+      var c=geo&&geo.currency&&(geo.currency.code||geo.currency); if(!c) throw new Error('sin moneda'); return c;
+    });
+  });
+}
+var LOCAL_PRICE=null;
+function getLocalPricing(){
+  if(LOCAL_PRICE) return LOCAL_PRICE;
+  var cached=null; try{ cached=JSON.parse(sessionStorage.getItem('c3x_geo')||'null'); }catch(e){}
+  if(cached&&cached.currency){ LOCAL_PRICE=Promise.resolve(cached); return LOCAL_PRICE; }
+  LOCAL_PRICE=detectCurrency().then(function(currency){
+    if(!currency||currency==='USD') return {currency:'USD',rate:1};
+    return fetchJSON('https://open.er-api.com/v6/latest/USD',3000).then(function(rd){
+      var rate=rd&&rd.rates&&rd.rates[currency];
+      return rate?{currency:currency,rate:rate}:{currency:'USD',rate:1};
+    });
+  }).catch(function(){ return {currency:'USD',rate:1}; })
+    .then(function(out){ try{ sessionStorage.setItem('c3x_geo',JSON.stringify(out)); }catch(e){} return out; });
+  return LOCAL_PRICE;
+}
+function fmtMoney(amount,currency){
+  var digits=amount>=100?0:2;
+  try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:currency,minimumFractionDigits:digits,maximumFractionDigits:digits}).format(amount); }
+  catch(e){ return '$'+(digits?Math.round(amount):amount.toFixed(2))+' '+currency; }
+}
+function applyLocalPricing(){
+  getLocalPricing().then(function(p){
+    if(p.currency==='USD') return;
+    document.querySelectorAll('[data-usd]').forEach(function(el){
+      var usd=parseFloat(el.getAttribute('data-usd'));
+      if(!isNaN(usd)) el.textContent=fmtMoney(usd*p.rate,p.currency);
+    });
+  });
+}
+getLocalPricing(); // arranca la consulta ya, para que esté lista al llegar a la oferta
 
 function thumb(img,label){ return img?'<div class="sp-thumb"><img src="'+img+'" alt="" loading="lazy" decoding="async"></div>':'<div class="sp-thumb">'+(label||'IMAGEN')+'</div>'; }
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -599,15 +651,21 @@ function renderSale(){
   var hero=CONFIG.IMG.sale_hero?'<img src="'+CONFIG.IMG.sale_hero+'" alt="">':'IMAGEN ANTES / DESPUÉS';
   var tiers='';
   CONFIG.TIERS.forEach(function(t,idx){
+    var oldHtml=t.oldUSD?('<span class="sp-tier-old"><span data-usd="'+t.oldUSD+'">'+fmtMoney(t.oldUSD,'USD')+'</span> antes</span>'):'';
+    var nowHtml='<span class="sp-tier-now"><span data-usd="'+t.nowUSD+'">'+fmtMoney(t.nowUSD,'USD')+'</span></span>';
+    var perdayHtml=t.perday
+      ? ('<div class="sp-perday"><div class="pd">'+esc(t.perday)+'</div><div class="u">USD/día</div></div>')
+      : ('<div class="sp-perday"><div class="pd" style="font-size:13.5px;line-height:1.2">PAGO<br>ÚNICO</div></div>');
     tiers+='<div class="sp-tier'+(t.popular?' pop':'')+(idx===state.tier?' sel':'')+'" data-i="'+idx+'">'+
-      (t.popular?'<span class="sp-pop">★ Más elegido</span>':'')+
+      (t.popular?'<span class="sp-pop">🔥 Oferta de lanzamiento</span>':'')+
       '<div class="sp-tier-row"><div><span class="sp-radio"></span>'+
       '<span class="sp-tier-name">'+esc(t.name)+'</span><br>'+
-      (t.old?'<span class="sp-tier-old">'+esc(t.old)+'</span>':'')+'<span class="sp-tier-now">'+esc(t.now)+'</span>'+
+      oldHtml+nowHtml+
       (t.off?'<br><span class="sp-off">'+esc(t.off)+'</span>':'')+
-      '</div><div class="sp-perday"><div class="pd">'+esc(t.perday)+'</div><div class="u">USD/día</div></div></div>'+
+      '</div>'+perdayHtml+'</div>'+
       (t.bonus?'<div class="sp-bonus">'+esc(t.bonus)+'</div>':'')+'</div>';
   });
+  var priceNote='<p style="text-align:center;color:var(--soft);font-size:11.5px;margin-top:-4px">Precio base 9,90 USD — convertido automáticamente a tu moneda local.</p>';
   var incl=(CONFIG.INCLUDES||[]).map(function(x){return '<li><span class="ck">✔</span><span>'+esc(x)+'</span></li>';}).join('');
   var inclSec=incl?'<div class="sp-sec"><h2 class="sp-sec-h">Qué incluye tu <span class="am">'+brand+'</span></h2><ul class="sp-incl">'+incl+'</ul></div>':'';
   var progSec=CONFIG.IMG.program?'<div class="sp-sec"><h2 class="sp-sec-h">Tu <span class="am">plan en la app</span></h2><div class="sp-hero-img" style="aspect-ratio:3/2">'+'<img src="'+CONFIG.IMG.program+'" alt="">'+'</div></div>':'';
@@ -631,7 +689,7 @@ function renderSale(){
     '<div class="sp-hero-img">'+hero+'</div>'+
     '<div class="sp-won">🎉 <b>¡Ganaste el mayor descuento!</b><br><span style="font-size:13px;color:var(--soft)">Aplicado a tu Método por tiempo limitado</span></div>'+
     inclSec + progSec + howSec +
-    '<div class="sp-sec"><h2 class="sp-sec-h">Elegí tu <span class="am">plan</span></h2>'+tiers+
+    '<div class="sp-sec"><h2 class="sp-sec-h">Tu <span class="am">acceso de por vida</span></h2>'+tiers+priceNote+
     '<a class="sp-cta" id="spBuy" href="#">Quiero mi Método Camina 3X</a></div>'+
     pay +
     '<div class="sp-guar"><span class="g-ic">🛡️</span><div><b style="color:var(--ink)">Garantía de 30 días.</b> Si no ves resultados caminando con el Método, te devolvemos el 100%. Sin preguntas.</div></div>'+
@@ -647,6 +705,7 @@ function renderSale(){
   upd();
   var total=CONFIG.TIMER_MIN*60, clock=document.getElementById('spClock');
   var ci=setInterval(function(){ total--; if(total<0){clearInterval(ci);return;} var m=Math.floor(total/60),s=total%60; clock.textContent=m+':'+(s<10?'0':'')+s; },1000);
+  applyLocalPricing();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
