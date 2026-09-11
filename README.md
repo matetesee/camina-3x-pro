@@ -57,3 +57,5 @@ Sirve en `http://localhost:3000`.
 ## Deploy
 Desplegado en Railway, conectado al repo de GitHub
 `matetesee/camina-3x-pro` para deploys automáticos en cada push a `main`.
+
+**URL en producción:** https://metodocamina3x.up.railway.app/
