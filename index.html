@@ -166,6 +166,9 @@
 #sp .sp-ring{font-family:'Poppins';font-weight:800;font-size:44px;color:var(--bronze2);margin-top:10px}
 #sp .sp-ltrack{height:9px;background:#E1EDF6;border-radius:6px;overflow:hidden;margin:18px 0}
 #sp .sp-lfill{height:100%;width:0;background:linear-gradient(90deg,var(--crimson),var(--bronze2));transition:width .25s}
+#sp .sp-loader-tst{margin-top:24px;max-width:360px;margin-left:auto;margin-right:auto;min-height:112px}
+#sp .sp-loader-tst .c{opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease}
+#sp .sp-loader-tst .c.in{opacity:1;transform:none}
 
 /* SALES */
 #sp .sp-timer{position:sticky;top:0;z-index:5;background:linear-gradient(90deg,var(--crimson),var(--crimson2));color:#fff;text-align:center;padding:11px;font-family:'Poppins';font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:14px}
@@ -663,15 +666,28 @@ function renderResult(){
   document.getElementById('spBuild').onclick=runLoader;
 }
 function runLoader(){
+  var tst=CONFIG.TESTIMONIALS||[];
+  var tstHtml=tst.length?'<div class="sp-loader-tst" id="spLoaderTst"></div>':'';
   stage.innerHTML='<div class="sp-loader"><div class="sp-forge">👟</div><div class="sp-ring" id="spPct">0%</div>'+
     '<div class="sp-ltrack"><div class="sp-lfill" id="spLF"></div></div>'+
-    '<p class="sp-sub" id="spLT">Armando tu Método Camina 3X…</p></div>';
+    '<p class="sp-sub" id="spLT">Armando tu Método Camina 3X…</p>'+tstHtml+'</div>';
   var p=0, msgs=[[0,'Armando tu Método Camina 3X…'],[35,'Calculando tus intervalos de caminata…'],[70,'Preparando tu guía de alimentación…'],[92,'Ajustando los últimos detalles…']];
   var pctEl=document.getElementById('spPct'),lf=document.getElementById('spLF'),lt=document.getElementById('spLT');
-  var iv=setInterval(function(){ p+=Math.random()*7+2; if(p>=100)p=100;
+  var tIv=null;
+  if(tst.length){
+    var tEl=document.getElementById('spLoaderTst'), ti=0;
+    var paintT=function(){
+      var x=tst[ti%tst.length]; ti++;
+      tEl.innerHTML='<div class="c"><div class="stars">★★★★★</div><p class="q">"'+esc(x.text)+'"</p><div class="who"><b>'+esc(x.name)+'</b><span class="res">'+esc(x.result)+'</span></div></div>';
+      requestAnimationFrame(function(){ tEl.querySelector('.c').classList.add('in'); });
+    };
+    paintT();
+    tIv=setInterval(paintT,2600);
+  }
+  var iv=setInterval(function(){ p+=Math.random()*5+1.5; if(p>=100)p=100;
     pctEl.textContent=Math.floor(p)+'%'; lf.style.width=p+'%';
     for(var k=msgs.length-1;k>=0;k--){ if(p>=msgs[k][0]){ lt.textContent=msgs[k][1]; break; } }
-    if(p>=100){ clearInterval(iv); setTimeout(renderSale,550); } },180);
+    if(p>=100){ clearInterval(iv); if(tIv)clearInterval(tIv); setTimeout(renderSale,550); } },220);
 }
 
 function renderSale(){
