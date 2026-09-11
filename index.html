@@ -117,6 +117,11 @@
 #sp .sp-input:focus{border-color:var(--bronze2);box-shadow:0 0 0 3px rgba(46,155,224,.16)}
 #sp .sp-input::placeholder{color:#8FA9BE}
 
+/* toggle de unidad (kg/lb, cm/pol) */
+#sp .sp-unit-toggle{display:flex;justify-content:center;gap:2px;width:fit-content;margin:0 auto 22px;background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px}
+#sp .sp-unit-btn{border:none;background:transparent;padding:9px 24px;border-radius:999px;font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;color:var(--soft);cursor:pointer;transition:background .15s,color .15s}
+#sp .sp-unit-btn.sel{background:var(--bronze);color:#FFFFFF;box-shadow:0 4px 10px rgba(46,155,224,.3)}
+
 /* interstitial / empathy */
 #sp .sp-inter{text-align:center;padding:14px 0}
 #sp .sp-icon{width:80px;height:80px;border-radius:50%;margin:6px auto 18px;display:flex;align-items:center;justify-content:center;font-size:36px;background:radial-gradient(circle at 35% 30%,#EAF4FF,#DCEEFB);border:1.5px solid var(--bronze);box-shadow:0 0 26px rgba(46,155,224,.20)}
@@ -440,8 +445,8 @@ var CONFIG = {
       {t:"Avanzada", cap:"Paso casi todo el día de pie o en movimiento"}] },
     { type:"multi", phase:"Diagnóstico", h:"¿Tenés alguno de estos hábitos?", sub:"Elegí todas las que apliquen", opts:[
       {t:"Como tarde en la noche"},{t:"No puedo dejar los dulces"},{t:"Me encantan los alimentos grasos o salados"},{t:"Ninguno de los anteriores"}] },
-    { type:"slider", key:"peso", phase:"Tu plan", h:"¿Cuál es tu peso actual?", sub:"Arrastrá para ajustar", min:40, max:150, value:70, step:1, unit:"kg" },
-    { type:"slider", key:"altura", phase:"Tu plan", h:"¿Cuál es tu altura?", sub:"Arrastrá para ajustar", min:140, max:210, value:162, step:1, unit:"cm" },
+    { type:"slider", key:"peso", phase:"Tu plan", h:"¿Cuál es tu peso actual?", sub:"Arrastrá para ajustar", min:40, max:150, value:70, step:1, unit:"kg", unitToggle:{altUnit:"lb", factor:2.20462} },
+    { type:"slider", key:"altura", phase:"Tu plan", h:"¿Cuál es tu altura?", sub:"Arrastrá para ajustar", min:140, max:210, value:162, step:1, unit:"cm", unitToggle:{altUnit:"pol", factor:0.393701} },
     { type:"cards", phase:"Tu plan", h:"¿Cuántas horas dormís por noche?", cols:1, opts:[
       {t:"Menos de 5 horas"},{t:"Entre 5 y 7 horas"},{t:"Entre 7 y 9 horas"},{t:"Más de 9 horas"}] },
     { type:"cards", phase:"Tu plan", h:"¿Cuántos vasos de agua tomás por día?", cols:1, opts:[
@@ -579,11 +584,34 @@ function render(){
     return;
   }
   if(s.type==='slider'){
-    html+='<div id="spSliderHost"></div><button class="sp-cta" id="spNext">Continuar</button>';
+    var UT=s.unitToggle;
+    var toggleHtml=UT?('<div class="sp-unit-toggle"><button type="button" class="sp-unit-btn sel" data-u="'+esc(s.unit)+'">'+esc(s.unit)+'</button><button type="button" class="sp-unit-btn" data-u="'+esc(UT.altUnit)+'">'+esc(UT.altUnit)+'</button></div>'):'';
+    html+=toggleHtml+'<div id="spSliderHost"></div><button class="sp-cta" id="spNext">Continuar</button>';
     stage.innerHTML=html;
+    var host=document.getElementById('spSliderHost');
+    var curUnit=s.unit;
     var sl=spSlider({min:s.min,max:s.max,value:s.value,step:s.step||1,unit:s.unit||''});
-    document.getElementById('spSliderHost').appendChild(sl);
-    document.getElementById('spNext').onclick=function(){ state.answers[s.key||state.i]=sl.getValue(); go(state.i+1); };
+    host.appendChild(sl);
+    if(UT){
+      stage.querySelectorAll('.sp-unit-btn').forEach(function(btn){
+        btn.onclick=function(){
+          if(btn.classList.contains('sel'))return;
+          stage.querySelectorAll('.sp-unit-btn').forEach(function(b){b.classList.remove('sel');});
+          btn.classList.add('sel');
+          // valor actual convertido siempre a la unidad base (kg/cm) antes de recrear el slider
+          var baseVal=curUnit===s.unit?sl.getValue():sl.getValue()/UT.factor;
+          curUnit=btn.dataset.u;
+          var cfg=curUnit===s.unit
+            ? {min:s.min,max:s.max,value:Math.round(baseVal),step:s.step||1,unit:s.unit}
+            : {min:Math.round(s.min*UT.factor),max:Math.round(s.max*UT.factor),value:Math.round(baseVal*UT.factor),step:1,unit:UT.altUnit};
+          host.innerHTML=''; sl=spSlider(cfg); host.appendChild(sl);
+        };
+      });
+    }
+    document.getElementById('spNext').onclick=function(){
+      var val=sl.getValue();
+      if(UT&&curUnit!==s.unit) val=Math.round(val/UT.factor); // se guarda siempre en la unidad base
+      state.answers[s.key||state.i]=val; go(state.i+1); };
     return;
   }
   if(s.type==='input'){
