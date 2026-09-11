@@ -10,6 +10,8 @@
   pegá acá el snippet estándar de Meta (fbq init + PageView), igual que en
   index.html, para que esta página también trackee.
 -->
+<!-- Utmify UTMs Script (igual que en index.html) -->
+<script src="https://cdn.utmify.com.br/scripts/utms/latest.js" async defer data-utmify-prevent-xcod-sck data-utmify-prevent-subids></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box}
@@ -174,6 +176,12 @@ function checkoutUrlWithParams(){
 }
 var buyBtn=document.getElementById('loBuy');
 buyBtn.href=checkoutUrlWithParams();
+buyBtn.addEventListener('click', function(e){
+  var url=checkoutUrlWithParams();
+  e.preventDefault();
+  if(url==='#') return; // todavía no hay checkout configurado
+  window.location.href=url;
+});
 
 /* ================= Countdown 9:59 ================= */
 (function(){

@@ -18,6 +18,13 @@
   META_PIXEL_ID + META_ACCESS_TOKEN en Railway → Variables para activar
   también el envío server-side en server.js (ya viene el endpoint listo).
 -->
+<!--
+  Utmify UTMs Script — versión sin ofuscar del script que pegaste
+  (decodifiqué el blob base64+XOR: apunta 1 a 1 a este mismo <script>
+  oficial de cdn.utmify.com.br, sin credenciales de ninguna otra cuenta).
+  Captura los utm_* de la URL y los persiste para atribuir la venta.
+-->
+<script src="https://cdn.utmify.com.br/scripts/utms/latest.js" async defer data-utmify-prevent-xcod-sck data-utmify-prevent-subids></script>
 </head>
 <body>
 
@@ -765,10 +772,28 @@ function renderSale(){
     '<p class="sp-disc">*Resultados ilustrativos, no garantizados. Los resultados individuales varían según dieta, ejercicio y metabolismo. Consultá a un profesional de la salud antes de empezar cualquier programa de ejercicio.</p>'+
     '</div></div>';
 
+  // Construye el link de compra forzando el traspaso de los parámetros de la
+  // URL actual (utm_source, utm_campaign, etc.) para que Utmify pueda atribuir
+  // la venta en el checkout.
+  function buyUrl(){
+    var t=CONFIG.TIERS[state.tier];
+    var base=t.variantId?(CONFIG.STORE+'/cart/'+t.variantId+':1'):'#';
+    if(base==='#') return base;
+    var search=window.location.search;
+    if(!search) return base;
+    var sep=base.indexOf('?')>-1?'&':'?';
+    return base+sep+search.replace(/^\?/,'');
+  }
   function paint(){ stage.querySelectorAll('.sp-tier').forEach(function(el){ el.classList.toggle('sel',+el.dataset.i===state.tier); }); upd(); }
-  function upd(){ var t=CONFIG.TIERS[state.tier],b=document.getElementById('spBuy'); b.href=t.variantId?(CONFIG.STORE+'/cart/'+t.variantId+':1'):'#'; }
+  function upd(){ var b=document.getElementById('spBuy'); b.href=buyUrl(); }
   stage.querySelectorAll('.sp-tier').forEach(function(el){ el.onclick=function(){ state.tier=+el.dataset.i; paint(); }; });
   stage.querySelectorAll('.sp-faq .q').forEach(function(b){ b.onclick=function(){ b.parentElement.classList.toggle('open'); }; });
+  document.getElementById('spBuy').addEventListener('click', function(e){
+    var url=buyUrl();
+    e.preventDefault();
+    if(url==='#') return; // todavía no hay checkout configurado
+    window.location.href=url;
+  });
   upd();
   var total=CONFIG.TIMER_MIN*60, clock=document.getElementById('spClock');
   var ci=setInterval(function(){ total--; if(total<0){clearInterval(ci);return;} var m=Math.floor(total/60),s=total%60; clock.textContent=m+':'+(s<10?'0':'')+s; },1000);
