@@ -324,7 +324,7 @@ function spProjection(opts){
   var ax1=document.createElementNS(NS,'text');ax1.setAttribute('x',x0);ax1.setAttribute('y',H-6);ax1.setAttribute('text-anchor','middle');ax1.setAttribute('class','sp-pj-axis-label');ax1.textContent='Hoy';
   var ax2=document.createElementNS(NS,'text');ax2.setAttribute('x',x1);ax2.setAttribute('y',H-6);ax2.setAttribute('text-anchor','middle');ax2.setAttribute('class','sp-pj-axis-label');ax2.textContent=label;
   var wl1=document.createElementNS(NS,'text');wl1.setAttribute('x',x0-4);wl1.setAttribute('y',y0+4);wl1.setAttribute('text-anchor','end');wl1.setAttribute('class','sp-pj-weight-label');wl1.setAttribute('fill','#5D7A90');wl1.textContent=fromKg+unit;
-  var dlabel=document.createElementNS(NS,'text');dlabel.setAttribute('x',x1+4);dlabel.setAttribute('y',last[1]+4);dlabel.setAttribute('text-anchor','end');dlabel.setAttribute('class','sp-pj-weight-label');dlabel.setAttribute('fill','#1E86D8');dlabel.setAttribute('opacity','0');dlabel.textContent=toKg+unit;
+  var dlabel=document.createElementNS(NS,'text');dlabel.setAttribute('x',x1+4);dlabel.setAttribute('y',Math.max(PT+10,last[1]-16));dlabel.setAttribute('text-anchor','end');dlabel.setAttribute('class','sp-pj-weight-label');dlabel.setAttribute('fill','#1E86D8');dlabel.setAttribute('opacity','0');dlabel.textContent=toKg+unit;
   var dot=document.createElementNS(NS,'circle');dot.setAttribute('cx',last[0]);dot.setAttribute('cy',last[1]);dot.setAttribute('r','5');dot.setAttribute('fill','#1E86D8');dot.setAttribute('class','sp-pj-dot');dot.setAttribute('opacity','0');
   svg.appendChild(ax1);svg.appendChild(ax2);svg.appendChild(wl1);svg.appendChild(dlabel);svg.appendChild(dot);wrap.appendChild(svg);
   function initAnim(){
