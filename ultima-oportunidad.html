@@ -20,12 +20,12 @@ html,body{margin:0;padding:0;background:#FFFFFF}
 #lo{
   --bg:#FFFFFF; --card:#FFFFFF; --card2:#F6FAFE; --line:#D7E8F5;
   --ink:#173A56; --soft:#5D7A90;
-  --bronze:#2E9BE0; --bronze2:#55C2F5; --crimson:#E14336;
+  --bronze:#16A34A; --bronze2:#4ADE80; --crimson:#E14336;
   --shadow:0 10px 28px rgba(23,58,86,.10);
   font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   color:var(--ink);
   background:
-    radial-gradient(620px 380px at 80% -6%, rgba(46,155,224,.08), transparent 60%),
+    radial-gradient(620px 380px at 80% -6%, rgba(22,163,74,.08), transparent 60%),
     radial-gradient(520px 360px at 0% 100%, rgba(225,67,54,.05), transparent 55%),
     linear-gradient(180deg,#FFFFFF,#F7FBFF);
   max-width:520px; margin:0 auto; min-height:100vh; padding:0 0 42px;
@@ -47,7 +47,7 @@ html,body{margin:0;padding:0;background:#FFFFFF}
 #lo ul.incl li{display:flex;align-items:flex-start;gap:10px;font-size:14px;padding:8px 0;border-bottom:1px solid var(--line)}
 #lo ul.incl li:last-child{border-bottom:none}
 #lo ul.incl li .ck{flex:none;width:20px;height:20px;border-radius:50%;background:var(--bronze2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px}
-#lo .cta{display:block;width:100%;padding:18px;border:none;border-radius:13px;font-family:'Poppins',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:15.5px;color:#fff;cursor:pointer;background:linear-gradient(140deg,var(--bronze2),var(--bronze));box-shadow:0 10px 24px rgba(46,155,224,.30);text-align:center;text-decoration:none}
+#lo .cta{display:block;width:100%;padding:18px;border:none;border-radius:13px;font-family:'Poppins',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:15.5px;color:#fff;cursor:pointer;background:linear-gradient(140deg,var(--bronze2),var(--bronze));box-shadow:0 10px 24px rgba(22,163,74,.30);text-align:center;text-decoration:none}
 #lo .guar{display:flex;gap:10px;align-items:flex-start;margin-top:18px;font-size:12.5px;color:var(--soft);line-height:1.5}
 #lo .guar b{color:var(--ink)}
 </style>
@@ -168,7 +168,7 @@ var CURRENCY_CACHE_KEY='c3x_currency_v1';
 
 /* ================= CTA con parámetros preservados ================= */
 function checkoutUrlWithParams(){
-  var base='#'; // TODO: reemplazar por el link real de checkout cuando exista
+  var base='https://camina3.impultienda.ar/o/camina-3';
   var search=window.location.search;
   if(base==='#' || !search) return base;
   var sep = base.indexOf('?')>-1 ? '&' : '?';
