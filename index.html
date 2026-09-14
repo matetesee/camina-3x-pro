@@ -406,14 +406,14 @@ var CONFIG = {
   ],
 
   INCLUDES: [
-    "🚶‍♀️ Rutina Camina 3X — intervalos de 3 min rápido / 3 min normal, adaptados a tu nivel y tu edad",
-    "🔥 Plan Express 7 Días para activar tu metabolismo desde el día 1",
+    "🚶‍♀️ Rutina Camina 3X — 3 caminatas cortas por día (mañana, tarde y noche) con progresión semanal de pasos",
+    "📈 Plan de 4 semanas: de 5.000 a 10.000 pasos por día, subiendo de a poco",
     "🍽️ Guía de alimentación para potenciar la quema de grasa caminando",
-    "🤖 Coach personal en la app — te acompaña y recuerda tu rutina cada día",
+    "🤖 Coach personal en la app — te acompaña y recuerda tus 3 caminatas cada día",
     "💬 Chat privado de acompañamiento Camina 3X",
     "🛡️ Plan Anti-Recaída 30 días para no volver a fojas cero",
-    "📊 Planilla de Progreso — medí tus minutos, tu energía y tus medidas",
-    "🎧 Audio-guías de caminata que marcan el ritmo de los intervalos por vos"
+    "📊 Planilla de Progreso — medí tus pasos, tu energía y tus medidas",
+    "🎧 Audio-guías de caminata que te marcan el ritmo, caminata por caminata"
   ],
   HOW: [
     { n:"I",   t:"Descubrí tu plan",        d:"Respondés el test y calculamos tu punto de partida." },
@@ -421,15 +421,15 @@ var CONFIG = {
     { n:"III", t:"Caminá y mirá el cambio", d:"La seguís día a día y ves resultados sin pisar un gimnasio." }
   ],
   TESTIMONIALS: [
-    { name:"Marisa G., 46", result:"-2 talles", text:"Nunca pensé que algo tan simple podía funcionar tanto. Con los intervalos de Camina 3X empecé a notar cambios en 2 semanas, sin dietas locas." },
+    { name:"Marisa G., 46", result:"-2 talles", text:"Nunca pensé que algo tan simple podía funcionar tanto. Con las 3 caminatas de Camina 3X empecé a notar cambios en 2 semanas, sin dietas locas." },
     { name:"Elena R., 38",  result:"constancia real", text:"Antes empezaba rutinas y las dejaba a la semana. Con Camina 3X solo tengo que salir a caminar 20 minutos y seguir el audio. Eso lo cambió todo." },
     { name:"Claudia M., 52", result:"más energía", text:"Pensé que ya era tarde para mí. El plan se adaptó a mi edad y a mi ritmo, y hoy tengo más energía que hace 10 años." }
   ],
   FAQ: [
-    { q:"¿Cómo funciona el Método Camina 3X?", a:"Alterna intervalos de caminata rápida y normal (3 minutos cada uno) para activar tu metabolismo hasta 3 veces más que una caminata tradicional, según tu plan personalizado." },
-    { q:"¿Necesito gimnasio o equipo especial?", a:"No. El método se hace caminando en tu barrio, en una cinta o incluso en tu casa. Solo necesitás tus zapatillas." },
-    { q:"¿Sirve si nunca hice ejercicio?", a:"Sí. El plan se adapta a tu nivel de partida, así que podés empezar sin experiencia previa." },
-    { q:"¿Es apto para mi edad?", a:"El Método Camina 3X ajusta la intensidad y la duración según tu edad y tu condición física actual." },
+    { q:"¿Cómo funciona el Método Camina 3X?", a:"Organiza 3 caminatas cortas por día —a la mañana, después de almorzar y después de cenar— con una progresión semanal de pasos: arrancás en 5.000 pasos diarios y llegás a 10.000 en 4 semanas, subiendo de a poco cada semana." },
+    { q:"¿Necesito gimnasio o equipo especial?", a:"No. Caminás en tu barrio, en una cinta o incluso en tu casa. Solo necesitás tus zapatillas." },
+    { q:"¿Sirve si nunca hice ejercicio?", a:"Sí. El plan arranca desde 5.000 pasos por día y sube de a poco, así que podés empezar sin experiencia previa." },
+    { q:"¿Es apto para mi edad?", a:"El Método Camina 3X ajusta la duración de cada caminata y el ritmo de la progresión semanal según tu edad y tu condición física actual." },
     { q:"¿Cuándo empiezo a notar cambios?", a:"Si seguís el plan con constancia, muchas personas notan más energía y menos hinchazón desde la primera semana, con cambios más visibles con el tiempo." }
   ],
 
@@ -448,7 +448,11 @@ var CONFIG = {
       {t:"⚖️ Bajar de peso"},{t:"🍑 Tonificar piernas y glúteos"},{t:"⚡ Ganar energía y movilidad"},{t:"🧘‍♀️ Reducir el estrés"}] },
     { type:"empathy", phase:"Diagnóstico", h:"¿Cómo afecta tu peso a tu día a día?", sub:"Elegí todas las que apliquen", opts:[
       {t:"📸 Evito sacarme fotos porque me da vergüenza"},{t:"❤️ Mi pareja ya no me mira con deseo como antes"},{t:"😞 Evito encuentros sociales porque no me siento bien"},{t:"👋 Ninguna de las opciones"}],
-      box:{ title:"Te entendemos", text:"Le pasa a la mayoría de las personas antes de empezar. La diferencia con el Método Camina 3X es que no necesitás fuerza de voluntad extra: los intervalos de caminata hacen que tu cuerpo queme hasta 3 veces más grasa que una caminata normal." } },
+      box:{ title:"Te entendemos", text:"El problema no es que no hagas ejercicio. Es que caminás sin estrategia. El Método Camina 3X organiza 3 caminatas cortas por día con un objetivo de pasos que sube de a poco cada semana, así tu cuerpo se acostumbra a moverse más sin que se sienta como \"hacer cardio\"." } },
+    { type:"inter", phase:"Diagnóstico", icon:"🧭",
+      h:"El problema no es que no <span class='am'>hagas ejercicio</span>",
+      body:"Es que estás caminando sin estrategia. El Método Camina 3X organiza 3 caminatas cortas por día —a la mañana para activarte, después de almorzar para acelerar tu gasto, y después de cenar para cerrar tu objetivo— con una meta de pasos que sube de a poco cada semana.",
+      quote:"“Si podés caminar, podés empezar a bajar de peso.”" },
     { type:"cards", phase:"Diagnóstico", h:"¿Realmente estás conforme con tu cuerpo hoy?", cols:1, opts:[
       {t:"😞 No, me siento con sobrepeso"},{t:"❤️ Sí, pero sé que puedo mejorar mi salud"},{t:"😕 No, quiero bajar de peso por mi bienestar"}] },
     { type:"cards", phase:"Diagnóstico", h:"¿Qué es lo que más te frena para bajar de peso?", cols:1, opts:[
@@ -685,7 +689,7 @@ function runLoader(){
   stage.innerHTML='<div class="sp-loader"><div class="sp-forge">👟</div><div class="sp-ring" id="spPct">0%</div>'+
     '<div class="sp-ltrack"><div class="sp-lfill" id="spLF"></div></div>'+
     '<p class="sp-sub" id="spLT">Armando tu Método Camina 3X…</p>'+tstHtml+'</div>';
-  var p=0, msgs=[[0,'Armando tu Método Camina 3X…'],[35,'Calculando tus intervalos de caminata…'],[70,'Preparando tu guía de alimentación…'],[92,'Ajustando los últimos detalles…']];
+  var p=0, msgs=[[0,'Armando tu Método Camina 3X…'],[35,'Armando tus 3 caminatas diarias…'],[70,'Preparando tu guía de alimentación…'],[92,'Ajustando los últimos detalles…']];
   var pctEl=document.getElementById('spPct'),lf=document.getElementById('spLF'),lt=document.getElementById('spLT');
   var tIv=null;
   if(tst.length){

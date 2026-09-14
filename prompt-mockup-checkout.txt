@@ -1,0 +1,18 @@
+Creá una imagen de producto ultra realista (mockup) para la portada de un checkout de un infoproducto digital de fitness llamado "MÉTODO CAMINA 3X".
+
+COMPOSICIÓN:
+- Un smartphone moderno (estilo iPhone, sin marca visible) en ángulo 3/4, mostrando en la pantalla la interfaz de una app de fitness: un dashboard de "plan de hoy" con un círculo de progreso grande (estilo anillo de actividad), el texto "3X" como elemento gráfico destacado, un ícono de caminata/zapatilla, y una barra o gráfico simple de progreso semanal. Usá números y íconos grandes en la pantalla, NO pongas párrafos de texto largo (los modelos de IA generan texto ilegible si hay mucho).
+- Al lado o detrás del celular, flotando levemente en el aire con una sombra suave, agregá una guía/ebook en formato de tapa de libro digital con el título "MÉTODO CAMINA 3X" bien grande y legible, en un diseño de tapa minimalista y premium.
+- Composición tipo "flat lay" o 3/4 elevado, como una imagen de producto de e-commerce premium.
+
+ESTILO Y COLORES:
+- Paleta de marca: verde como color principal (verde vibrante tipo #16A34A y un verde más claro tipo #4ADE80), fondo blanco o gris muy claro con un leve degradé, sin texturas oscuras.
+- Iluminación de estudio, suave, profesional, sombras suaves y realistas debajo de los objetos.
+- Estética limpia, moderna, "wellness/fitness app", nada genérico ni de stock barato.
+- Fotorrealista, no ilustración ni 3D render caricaturesco.
+
+FORMATO:
+- Cuadrado (1:1) o vertical (4:5), alta resolución, fondo despejado para poder recortar si hace falta.
+- Sin logos de marcas reales (Apple, Nike, etc.), sin marcas de agua, sin texto en otro idioma que no sea español.
+
+Generá 2-3 variantes para elegir.
